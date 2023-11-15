@@ -10,8 +10,13 @@ class DataSensorController {
     }
 
     getAllDatas = async (req, res) => {
-        const foundDatas = await DataSensorService.getAllDatas(req.query.page, req.query.sort)
+        const foundDatas = await DataSensorService.getAllDatas(req.query.page, req.query.sort, req.query.filter)
         res.send(foundDatas)
+    }
+
+    getTotalRecord = async (req, res) => {
+        const totalRecord = await DataSensorService.getTotalRecord(req.query.filter)
+        res.send(`${totalRecord}`)
     }
 
 }

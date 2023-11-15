@@ -5,43 +5,12 @@ import { createContext, useState, useEffect } from 'react';
 
 // Initiate Context
 export const dataSensorContext = createContext(); // ROOT context of datasensor
-// export const dataJsonContext = createContext(); 
+// export const dataDeviceContext = createContext(); 
 
 function App() {
 
-  const [dataJson, setDataJson] = useState(
-  [
-    {
-      device: 'NodeMCU',
-      sensor: 'DHT11',
-      dataSensor: 'null',
-      time: '05-08-2002'
-    },
-    {
-      device: 'NodeMCU',
-      sensor: 'DHT11',
-      dataSensor: 'null',
-      time: '05-08-2002'
-    },
-    {
-      device: 'NodeMCU',
-      sensor: 'DHT11',
-      dataSensor: 'null',
-      time: '05-08-2002'
-    },
-    {
-      device: 'NodeMCU',
-      sensor: 'DHT11',
-      dataSensor: 'null',
-      time: '05-08-2002'
-    },
-    {
-      device: 'NodeMCU',
-      sensor: 'DHT11',
-      dataSensor: 'null',
-      time: '05-08-2002'
-    }
-  ])
+  // const [openLed, setOpenLed] = useState(false)
+  // const [openFan, setOpenFan] = useState(false)
 
   const [datas, setDatas] = useState(
   [
@@ -122,10 +91,11 @@ const getData = async () => {
     if (response.ok) {
         const data = await response.json();
         const newData = {
-            time: "12:10",
+            time: new Date().getMinutes() + ':' + new Date().getSeconds(),
             Temperature: data[0].temperature.toFixed(),
             Humidity: data[0].humidity,
             Light: ((data[0].light)/15).toFixed(),
+            DoBui: data[0].dobui,
             amt: 2100
         }
         setDatas((prevState)=> [...prevState, newData].slice(1))
@@ -155,7 +125,7 @@ useEffect(() => {
   return (
     // mutil data context provider
     <dataSensorContext.Provider value={datas}>
-      {/* <dataJsonContext.Provider value={dataJson}> */}
+      {/* <dataDeviceContext.Provider value={openLed}> */}
         <div className="">
           <div className="flex overflow-scroll ">
             <div className="basis-[12%] h-[100vh]">
@@ -169,7 +139,7 @@ useEffect(() => {
             </div>
           </div>
         </div>
-      {/* </dataJsonContext.Provider> */}
+      {/* </dataDeviceContext.Provider>  */}
     </dataSensorContext.Provider>
   );
 }

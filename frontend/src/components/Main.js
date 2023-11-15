@@ -22,7 +22,7 @@ const Main = () => {
                     </div>
 
                     {/* Chart */}
-                    <ChartComponent />
+                    <ChartComponent  />
                 </div>
                 
                 {/* Switch */}

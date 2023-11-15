@@ -8,6 +8,7 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
+#include <stdlib.h>
 
 /**** DHT11 sensor Settings *******/
 #define DHTpin 2   //Set DHT pin as GPIO2 (D4)
@@ -16,6 +17,7 @@ DHTesp dht;
 /**** LED Settings *******/
 const int led = 5; //Set LED pin as GPIO5 (D1)
 const int led_fan = 4; // Set LED2 (FAN) pin as GPIO4 D2
+const int led_plus = 0; // Set LED2 (FAN) pin as GPIO4 D3
 
 /**** PHOTOCELL Settings *******/
 #define PHOTOCELL A0 
@@ -75,6 +77,7 @@ void reconnect() {
 
       client.subscribe("led_state");   // subscribe the topics here
       client.subscribe("led_fan_state");   // subscribe the topics here
+      client.subscribe("led_plus_state");   // subscribe the topics here
 
     } else {
       Serial.print("failed, rc=");
@@ -95,7 +98,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //--- check the incomming message
   if( strcmp(topic,"led_state") == 0){
     if (incommingMessage.equals("1")) {
-      digitalWrite(led, HIGH);   // Turn the LED on
+      digitalWrite(led, HIGH);  // Turn the LED on
       // client.publish("led_state", "LED_ON_DONE");
     }
     else {
@@ -116,6 +119,18 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
 
+  //--- check the incomming message
+  if( strcmp(topic,"led_plus_state") == 0){
+    if (incommingMessage.equals("1"))  {
+      digitalWrite(led_plus, HIGH);   // Turn the LED on
+      // client.publish("led_state", "FAN_ON_DONE");
+    }
+    else { 
+      digitalWrite(led_plus, LOW);  // Turn the LED off
+      // client.publish("led_state", "FAN_OFF_DONE");
+    }
+  }
+
 }
 
 /**** Method for Publishing MQTT Messages **********/
@@ -129,8 +144,10 @@ void setup() {
 
   dht.setup(DHTpin, DHTesp::DHT11); //Set up DHT11 sensor
   pinMode(led, OUTPUT); //set up LED
-  pinMode(led_fan, OUTPUT); //set up LED
+  pinMode(led_fan, OUTPUT); //set up FAN
+  pinMode(led_plus, OUTPUT); //set up LED_PLUS
   // set up PHOTOCELL
+
   Serial.begin(9600);
   while (!Serial) delay(1);
   setup_wifi();
@@ -155,6 +172,7 @@ void loop() {
   delay(dht.getMinimumSamplingPeriod());
   float humidity = dht.getHumidity();
   float temperature = dht.getTemperature();
+  // int r = rand() % 100;
 
   // photocell reading light
   int light = readLightSensor();
@@ -167,6 +185,7 @@ void loop() {
   doc["humidity"] = humidity;
   doc["temperature"] = temperature;
   doc["light"] = light;
+  // doc["dobui"] = r;
 
   char mqtt_message[128];
   serializeJson(doc, mqtt_message);

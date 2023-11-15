@@ -1,17 +1,17 @@
 'use strict'
 
-const led = require('../models/led.model')
+const ledPlus = require('../models/ledPlus.model')
 const { convertToObjectId, formatDate } = require('../utils/index')
 
-class LedService {
+class LedPlusService {
 
     static saveAction = async (payload) => {
         const newState = payload == "1" ? "on" : "off" 
 
-        led.create({
-            type: 'led',
+        ledPlus.create({
+            type: 'ledPlus',
             state: newState,
-            description: 'red led'
+            description: 'led plus live code'
         })
     }
 
@@ -52,7 +52,7 @@ class LedService {
             }
         }
 
-        const foundDatas = await led.find(filterBy).sort(sortBy).skip(skip).limit(limit).lean()
+        const foundDatas = await ledPlus.find(filterBy).sort(sortBy).skip(skip).limit(limit).lean()
 
         return foundDatas 
     }
@@ -90,16 +90,10 @@ class LedService {
             }
         }
         
-        const totalRecord = await led.find(filterBy).count()
+        const totalRecord = await ledPlus.find(filterBy).count()
 
         return totalRecord
     }
-
-    static getTotalOn = async () => {
-        const totalOn = await led.find({state: 'on'}).count()
-
-        return totalOn
-    }
 }
 
-module.exports = LedService
+module.exports = LedPlusService

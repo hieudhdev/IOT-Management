@@ -72,7 +72,7 @@ app.use('', require('./routes/index'))
 // app.use('', async (req, res) => {
 //     const newDataSensor = await dataSensor.create({
 //         device: 'nodeMCU',
-//         humidity: 3,
+//         humidity: 4,
 //         temperature: 30,
 //         light: 900
 //     })
